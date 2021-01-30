@@ -1,0 +1,77 @@
+.stock_position {
+  flex: 0.35 1 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.stock_position_body {
+  flex: 1;
+  background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+  background-repeat: repeat;
+  background-position: center;
+  padding: 30px;
+  overflow: scroll;
+}
+
+.stock_position_message {
+  position: relative;
+  font-size: 16px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: white;
+  width: fit-content;
+}
+
+.stock_position_timestamp {
+  margin-left: 10px;
+  font-size: xx-small;
+}
+
+.stock_position_receiver {
+  margin-left: auto;
+  background-color: #dcf8c6;
+}
+
+.stock_position_footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 62px;
+  border: 1px solid lightgray;
+}
+
+.stock_position_footer > form {
+  flex: 1;
+  display: flex;
+}
+
+.stock_position_footer > form > input {
+  flex: 1;
+  border-radius: 30px;
+  padding: 10px;
+  border: none;
+  margin: 0 10px 0px 10px;
+}
+
+.stock_position_footer > form > button {
+  display: none;
+}
+
+.stock_position_name {
+  position: absolute;
+  top: -15px;
+  font-weight: 800;
+  font-size: xx-small;
+}
+
+
+/* NEWS SECTION */
+
+.stock_position_news_body {
+  flex: 1 1 1;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
