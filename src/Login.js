@@ -15,7 +15,7 @@ function Login() {
     return (
         <div className="login">
             <div className="login_container">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" />
+                <img src="https://br-olymptrade.com/wp-content/uploads/2020/07/Bulls-Bears-750x410.jpg" alt="" />
                 <div className="login_text">
                     <h1>Sign in to InvestGroup</h1>
                 </div>

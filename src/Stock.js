@@ -34,11 +34,17 @@ function Stock() {
 
     useEffect(() => {
         if (stockId) {
-            db.collection('stocks').doc(stockId).onSnapshot(snapshot => {
-                setStockName(snapshot.data().name);
-                setStockLogo(snapshot.data().logo);
-                setStockSymbol(snapshot.data().symbol);
+            const stockSub = db.collection('stocks').doc(stockId).onSnapshot(snapshot => {
+                if (snapshot.exists) {
+                    setStockName(snapshot.data().name);
+                    setStockLogo(snapshot.data().logo);
+                    setStockSymbol(snapshot.data().symbol);
+                }
             });
+
+            return function cleanup() {
+                stockSub();
+            }
         }
     }, [stockId])
 
@@ -49,30 +55,13 @@ function Stock() {
                 <Avatar src={stockLogo} />
                 <div className='stock_headerInfo'>
                     <h3 className='stock-room-name'>{stockName} ({stockSymbol})</h3>
-                    <p className='stock-room-last-seen'>
-                        Last seen {" "}
-                        {new Date(
-                            messages[messages.length - 1]?.
-                                timestamp?.toDate()
-                        ).toUTCString()}
-                    </p>
                 </div>
                 <div className="stock_headerRight">
-                    <IconButton>
-                        <SearchOutlined />
-                    </IconButton>
-                    <IconButton>
-                        <AttachFile />
-                    </IconButton>
-                    <IconButton>
-                        <MoreVert />
-                    </IconButton>
-
                 </div>
             </div>
             <div className='stock_body'>
                 <StockChat stockId={stockId} />
-                <StockPosition stockId={stockId} />
+                <StockPosition key={stockId} stockId={stockId} />
             </div>
         </div>
     )

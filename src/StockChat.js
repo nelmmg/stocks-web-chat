@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Avatar, IconButton } from '@material-ui/core';
 import { AttachFile, MoreVert, SearchOutlined } from '@material-ui/icons';
+import SendIcon from '@material-ui/icons/Send';
 import MicIcon from '@material-ui/icons/Mic';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import './StockChat.css';
@@ -22,6 +23,9 @@ function StockChat({ stockId }) {
 
     const messagesEndRef = useRef(null)
 
+    const messagesSub = null;
+    const stockSub = null;
+
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "instant" })
     }
@@ -30,23 +34,37 @@ function StockChat({ stockId }) {
         scrollToBottom()
     }, [messages]);
 
-
     useEffect(() => {
         if (stockId) {
-            db.collection('stocks').doc(stockId).onSnapshot(snapshot => {
-                setStockName(snapshot.data().name);
-                setStockLogo(snapshot.data().logo);
-                setStockSymbol(snapshot.data().symbol);
+            const stockSub = db.collection('stocks').doc(stockId).onSnapshot(snapshot => {
+                if (snapshot.exists) {
+                    setStockName(snapshot.data().name);
+                    setStockLogo(snapshot.data().logo);
+                    setStockSymbol(snapshot.data().symbol);
+                }
             });
-            db.collection('stocks').doc(stockId).collection("messages").orderBy("timestamp", "asc").onSnapshot(snapshot => {
+            const messagesSub = db.collection('stocks').doc(stockId).collection("messages").orderBy("timestamp", "asc").onSnapshot(snapshot => {
                 setMessages(snapshot.docs.map(doc => doc.data()))
             });
+
+            return function cleanup() {
+                stockSub();
+                messagesSub();
+            }
         }
+
+
+
     }, [stockId])
 
 
     const sendMessage = (e) => {
         e.preventDefault();
+
+        if (!input) {
+            return;
+        }
+
         db.collection('stocks').doc(stockId).collection('messages').add({
             message: input,
             name: user.displayName,
@@ -73,12 +91,10 @@ function StockChat({ stockId }) {
                 <div ref={messagesEndRef} />
             </div>
             <div className='stock_chat_footer'>
-                <InsertEmoticonIcon />
                 <form>
                     <input value={input} onChange={(e) => setInput(e.target.value)} type="text" placeholder="Type a message" />
-                    <button type="submit" onClick={sendMessage}> Send a Message</button>
+                    <button type="submit" onClick={sendMessage}> <SendIcon /></button>
                 </form>
-                <MicIcon />
             </div>
 
         </div>

@@ -1,11 +1,13 @@
 .sidebar {
+  display: flex;
   flex: 0.25;
+  flex-direction: column;
 }
 
 .sidebar_search {
   display: flex;
   align-items: center;
-  background-color: #f6f6f6;
+  background-color: #572e2e;
   height: 39px;
   padding: 10px;
 }
@@ -57,4 +59,15 @@
 .sidebar_headerRight > .MuiSvgIcon-root {
   margin-right: 2vw;
   font-size: 20px !important;
+}
+
+.sidebar_stocks {
+  flex: 1;
+  overflow: scroll;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+.sidebar_stocks::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }

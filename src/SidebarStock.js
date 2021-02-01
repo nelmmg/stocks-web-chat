@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useNatigate } from 'react';
+import { Redirect } from 'react-router-dom'
 import { Avatar } from "@material-ui/core";
 import './SidebarStock.css';
 import db from './firebase';
 import firebase from 'firebase';
 import { Link } from 'react-router-dom';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import ConfirmDialog from './ConfirmDialog';
+
+import { useHistory } from "react-router-dom";
 
 function SidebarStock({ id, name, logo, symbol, addNewStock }) {
     const [messages, setMessages] = useState("");
+    const [confirmOpen, setConfirmOpen] = React.useState(false);
+    const history = useHistory();
 
     const finnhub_key = process.env.REACT_APP_FINNHUB_KEY;
 
@@ -19,8 +26,7 @@ function SidebarStock({ id, name, logo, symbol, addNewStock }) {
     }, [id]);
 
     const createStock = () => {
-        const stockSymbol = prompt("Please the stock symbol");
-
+        const stockSymbol = prompt("Please enter the stock symbol");
         if (stockSymbol) {
             const stockURL = "https://finnhub.io/api/v1/stock/profile2?symbol=" + stockSymbol + "&token=" + finnhub_key;
             fetch(stockURL)
@@ -42,7 +48,6 @@ function SidebarStock({ id, name, logo, symbol, addNewStock }) {
         db.collection("stocks").where("symbol", "==", stockSymbol)
             .get()
             .then(function (querySnapshot) {
-                console.log(querySnapshot.size)
                 if (querySnapshot.size > 0) {
                     alert("Stock already exists!");
                 }
@@ -60,17 +65,53 @@ function SidebarStock({ id, name, logo, symbol, addNewStock }) {
             });
     }
 
+    const deleteStock = (stockSymbol) => {
+        db.collection("stocks").where("symbol", "==", stockSymbol)
+            .get()
+            .then(function (querySnapshot) {
+                const id = querySnapshot.docs[0].id;
+                querySnapshot.docs[0].ref.delete();
+
+                var segment_str = window.location.pathname;
+                var segment_array = segment_str.split('/');
+                var last_segment = segment_array.pop();
+                if (last_segment == id) {
+                    history.push('/');
+                }
+            })
+            .catch(function (error) {
+                console.log("Error getting documents: ", error);
+            });
+    }
+
+
     return !addNewStock ? (
-        <Link to={`/stocks/${id}`} key={id}>
-            <div className="sidebarStock">
-                <Avatar src={logo} />
+        <div className="sidebarStock">
+            <Link to={`/stocks/${id}`} key={id} className="sidebarStock_link">
+                < div className="sidebarStock_logo">
+                    <Avatar src={logo} />
+                </div>
                 < div className="sidebarStock_info">
                     <h2>{name} ({symbol})</h2>
-                    <p>{messages[0]?.message}</p>
+                    <div>
+                        {messages.length > 0 &&
+                            <span>{messages[0]?.name.substr(0, messages[0]?.name.indexOf(' '))}: {messages[0]?.message}</span>}
+                    </div>
                 </div>
-            </div>
-        </Link>
+            </Link>
+            <div className="sidebarStock_delete">
+                <HighlightOffIcon onClick={() => setConfirmOpen(true)} />
+                <ConfirmDialog
+                    title="Detete Stock?"
+                    open={confirmOpen}
+                    setOpen={setConfirmOpen}
+                    onConfirm={() => { deleteStock(symbol) }}
+                >
+                    All the messages will be deleted.
+                 </ConfirmDialog>
 
+            </div>
+        </div>
     ) : (
             <div onClick={createStock} className="sidebarStock">
                 <h3 className="add-new-stock-title">Add New Stock</h3>

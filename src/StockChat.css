@@ -1,16 +1,24 @@
 .stock_chat {
-  flex: 0.75;
+  flex: 0.6;
   display: flex;
   flex-direction: column;
 }
 
 .stock_chat_body {
   flex: 1;
-  background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+  background-image: url("https://image.freepik.com/free-vector/business-candle-stick-graph-chart-stock-market_41981-1435.jpg");
   background-repeat: repeat;
   background-position: center;
+  background-color: silver;
+  background-size: contain;
   padding: 30px;
   overflow: scroll;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+.stock_chat_body::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 .stock_chat_message {
@@ -20,7 +28,7 @@
   padding: 10px;
   background-color: white;
   width: fit-content;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .stock_chat_timestamp {
@@ -30,7 +38,7 @@
 
 .stock_chat_receiver {
   margin-left: auto;
-  background-color: #dcf8c6;
+  background-color: gainsboro;
 }
 
 .stock_chat_footer {
@@ -44,6 +52,7 @@
 .stock_chat_footer > form {
   flex: 1;
   display: flex;
+  align-items: center;
 }
 
 .stock_chat_footer > form > input {
@@ -55,7 +64,8 @@
 }
 
 .stock_chat_footer > form > button {
-  display: none;
+  /* display: none; */
+  border: none;
 }
 
 .stock_chat_name {

@@ -6,6 +6,7 @@ import Login from './Login';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import firebase from 'firebase/app';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import NoStock from './NoStocks';
 
 const auth = firebase.auth();
 
@@ -26,7 +27,7 @@ function App() {
                   <Stock />
                 </Route>
                 <Route path="/">
-                  <Stock />
+                  <NoStock />
                 </Route>
               </Switch>
             </Router>

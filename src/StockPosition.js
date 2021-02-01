@@ -3,7 +3,7 @@ import { Avatar, IconButton } from '@material-ui/core';
 import { AttachFile, MoreVert, SearchOutlined } from '@material-ui/icons';
 import MicIcon from '@material-ui/icons/Mic';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
-import './StockChat.css';
+import './StockPosition.css';
 import { useParams } from 'react-router-dom';
 import db from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -17,15 +17,18 @@ function StockPosition({ stockId }) {
 
     const [stockData, setStockData] = useState("");
     const [stockNews, setStockNews] = useState([]);
+    const [stockSymbol, setStockSymbol] = useState("");
 
     const finnhub_key = process.env.REACT_APP_FINNHUB_KEY;
+    const yahoo_finance = "https://finance.yahoo.com/quote/";
 
     useEffect(() => {
         if (stockId) {
             db.collection('stocks').doc(stockId).onSnapshot(snapshot => {
-                if (snapshot) {
+                if (snapshot.exists) {
                     getStockInfo(snapshot.data().symbol);
                     getStockNews(snapshot.data().symbol);
+                    setStockSymbol(snapshot.data().symbol)
                 }
             });
         }
@@ -38,14 +41,10 @@ function StockPosition({ stockId }) {
         fetch(stockURL)
             .then(res => res.json())
             .then((data) => {
-
-                data.sort(function (x, y) {
-                    return x.datetime - y.datetime;
-                })
-
                 if (data) {
-                    //const sliced = data.slice(0, 5)
-                    //console.log(sliced);
+                    data.sort(function (x, y) {
+                        return y.datetime - x.datetime;
+                    })
                     setStockNews(data);
                 }
                 else {
@@ -82,8 +81,8 @@ function StockPosition({ stockId }) {
                     <p><b>Current:</b> {stockData.c}</p>
                     <p><b>High:</b> {stockData.h}</p>
                     <p><b>Low:</b> {stockData.l}</p>
-
                     <p><b>Previous Close:</b> {stockData.pc}</p>
+                    <span className="stock_yahoo" onClick={() => window.open(yahoo_finance + stockSymbol, "_blank")} >Yahoo Finance Details</span>
                 </div>
             </div>
             <div className='stock_position_news'>
